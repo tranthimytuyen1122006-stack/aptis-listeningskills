@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aptis Listening — Mock Exam</title>
+  <style>
+    :root{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;}
+    body{margin:0;padding:24px;background:#eef2ff;color:#0f172a}
+    .container{max-width:1000px;margin:0 auto;background:white;border-radius:16px;padding:24px;box-shadow:0 10px 40px rgba(0,0,0,.08)}
+    h1{font-size:26px;font-weight:700;margin-bottom:8px;color:#1e3a8a}
+    p.lead{color:#475569;margin-bottom:20px}
+    .audio-wrap{background:#f1f5f9;padding:16px;border-radius:12px;margin-bottom:20px;display:flex;gap:16px;align-items:center}
+    .questions{margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .card{background:#fafafa;border-radius:12px;padding:16px;border:1px solid #e2e8f0;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+    .qnum{font-weight:600;color:#1e293b;margin-bottom:8px}
+    footer{margin-top:20px;text-align:right;color:#94a3b8;font-size:14px}
+    @media (max-width:540px){.questions{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Aptis Listening — Mock Exam</h1>
+    <p class="lead">Audio is hosted on Google Drive — playable even when uploaded to GitHub or embedded in Google Sites.</p>
+
+    <!-- MAIN AUDIO -->
+    <div class="audio-wrap">
+      <audio id="player" controls preload="auto">
+        <source src="https://drive.google.com/uc?export=download&id=1WevXqsGknkQHwoF-PtXzEdetHUbIr1Qg" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+
+    <div id="questions" class="questions"></div>
+
+    <footer>Made for your Aptis practice – customized version</footer>
+  </div>
+
+<script>
+const questions = [
+  'Brian planned to see his friend tonight. Why can\\'t he come?',
+  'How do most people travel to Alan\\'s city?',
+  'What does Mark eat every morning?',
+  'What day is Ana\\'s party?',
+  'What did Martin lose?',
+  'What do the friends decide to do?',
+  'What type of TV does the woman want?',
+  'What doesn\\'t she like about the house?',
+  'Whose birthday is in May?',
+  'What time is Alana\\'s car coming?',
+  'Why is the job difficult?',
+  'Which items have best reductions?',
+  'Who is the new shop for?',
+  'Which film is on in the morning only?',
+  'When & where does the 3K race start?',
+  'Where will you have lunch?',
+  'How should David get the equipment?',
+  'Where did the robbery happen?',
+  'Why does Paul call Anita?',
+  'When is the house available?',
+  'What is Miss Jones\\' number?',
+  'Where does Tom want to meet Ameera?',
+  'Why hasn\\'t Khalid finished his report?',
+  'What present does Amal buy?'
+];
+
+const wrap = document.getElementById('questions');
+
+questions.forEach((q, index) => {
+  const card = document.createElement('div'); 
+  card.className = 'card';
+  card.innerHTML = `<div class='qnum'>${index+1}. ${q}</div>`;
+  wrap.appendChild(card);
+});
+</script>
+
+</body>
+</html>
