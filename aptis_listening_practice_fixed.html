@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aptis Listening — Practice Test (Interactive)</title>
+  <style>
+    :root{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}
+    body{margin:0;padding:24px;background:#f6f8fb;color:#0f172a}
+    .container{max-width:980px;margin:0 auto;background:#fff;border-radius:12px;padding:20px;box-shadow:0 8px 30px rgba(2,6,23,.08)}
+    h1{margin:0 0 8px;font-size:22px}
+    p.lead{margin:0 0 18px;color:#334155}
+    .audio-wrap{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+    .questions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .card{background:#fbfdff;border:1px solid #e6eef8;padding:12px;border-radius:8px}
+    .qnum{font-weight:700;margin-bottom:8px}
+    .choices{display:flex;flex-direction:column;gap:6px}
+    label{cursor:pointer}
+    .controls{display:flex;gap:8px;align-items:center;margin-top:14px}
+    button{background:#0ea5a1;border:none;color:white;padding:8px 12px;border-radius:8px;cursor:pointer}
+    button.secondary{background:#64748b}
+    .notice{font-size:13px;color:#475569;margin-top:10px}
+    .answer-sheet{margin-top:18px;background:#f8fafc;padding:12px;border-radius:8px;border:1px dashed #e2e8f0}
+    .small{font-size:13px;color:#475569}
+    footer{margin-top:18px;text-align:right;color:#94a3b8;font-size:13px}
+    @media (max-width:540px){.questions{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Aptis Listening — Mock Exam</h1>
+    <p class="lead">Bài luyện nghe mô phỏng chuẩn Aptis. <em>Audio</em> và câu hỏi được thiết kế theo cấu trúc chính thức.</p>
+
+    <div class="audio-wrap">
+      <audio id="player" controls preload="auto">
+        <source src="audio-Aptis-Listening-Test-1.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+      <div>
+        <div class="small">Playback controls:</div>
+        <div class="controls">
+          <button id="replay">Replay last clip</button>
+          <button id="playAll" class="secondary">Play full test</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice">Instructions: You will hear 25 short recordings (each is played twice in the original test). Listen and choose the best answer for each question. Use the "Answer sheet" area below to copy your final answers.</div>
+
+    <div id="questions" class="questions" aria-live="polite">
+      <!-- Questions populated by JS -->
+    </div>
+
+    <div class="controls" style="margin-top:18px">
+      <button id="clear">Clear all answers</button>
+      <button id="download">Download answers (.txt)</button>
+      <button id="showAnswers" class="secondary">Show answer sheet</button>
+    </div>
+
+    <div id="answerSheet" class="answer-sheet" style="display:none">
+      <div><strong>Answer sheet</strong> — copy these to your official answer paper.</div>
+      <pre id="answersPre" style="margin-top:8px;white-space:pre-wrap"></pre>
+    </div>
+
+    <footer>Made for your Aptis practice — edit the questions in the code if you want different options.</footer>
+  </div>
+
+  <script>
+    // ====== QUESTIONS DATA ======
+    // This array is based on the 'Aptis Listening Đề 1' you provided.
+    // Each question includes its text and choices (4 items). The code will render radio buttons.
+    const questions = [
+      {id:0, text:'Brian planned to see his friend tonight. Why does he say he can\'t come?', choices:['busy','on holiday','not well','late']},
+      
+      {id:2, text:"Alan calls his friend to suggest ways of travelling to his city. How do most people get there?", choices:['boat','car','train','taxi']},
+      {id:3, text:"Monica leaves you a message about her son Mark. What does he eat every morning?", choices:['cake','fish','milk','eggs']},
+      {id:4, text:"Ana calls you to change when her party is. What day will the party be?", choices:['Saturday','Thursday','Friday','Tuesday']},
+      {id:5, text:"Martin leaves his friend Maggie a message after a party. What did he lose?", choices:['shoes','car','glasses','book']},
+      {id:6, text:"Listen to two friends discussing their plans. What do they decide to do?", choices:['go to the park','watch a football game','go swimming','go to the woods']},
+      {id:7, text:"Listen to a woman in a shop. What type of TV does she want to buy?", choices:['an old-fashioned TV','a flat screen TV','an expensive TV','a 40-inch screen TV']},
+      {id:8, text:"Listen to a person talking about a house. What doesn\'t she like about it?", choices:['floors','doors','carpet','windows']},
+      {id:9, text:"Listen to the radio announcement. Whose birthday is it in May?", choices:['Pete','Kitty','George','Paul']},
+      {id:10, text:"Alana calls her colleague. What time is the car getting her?", choices:['2.30','12.45','5.00','12.30']},
+      {id:11, text:"Two friends are talking about a job. Why is the job difficult?", choices:['getting up early','working with the doctors','working many hours','working at weekends']},
+      {id:12, text:"Listen to an announcement in a department store. Which items have the best reductions this weekend?", choices:['fridges','shirts','casual shoes','beauty products']},
+      {id:13, text:"Listen to the announcement about a new shop. Who is the new shop for?", choices:['like good deals','like a good read','like a bit of luxury','love to cook']},
+      {id:14, text:"What film is on in the morning only?", choices:["Abdul's Adventures","Alice","Nasty Shark","Swimming with Pink Fishes"]},
+      {id:15, text:"When and where will the 3K race start?", choices:['main gate at 8.00','east gate at 7.30','main gate at 7.00','east gate at 5.00']},
+      {id:16, text:"Where will you have lunch?", choices:['museum','gallery','castle','department store']},
+      {id:17, text:"How does David\'s friend advise him to get the equipment?", choices:['hire it','buy it second hand','buy it new','get it from his brother']},
+      {id:18, text:"Where did the robbery take place?", choices:['bank','pet shop','petrol station','church']},
+      {id:19, text:"Why does Paul call Anita?", choices:['To say sorry.','To say goodbye.','To say thank you.','To say hello.']},
+      {id:20, text:"When is the house available?", choices:['next Tuesday','next Thursday','this Tuesday','this Thursday']},
+      {id:21, text:"What is Miss Jones\' telephone number?", choices:['071 367714','071 366714','071 336714','071 367414']},
+      {id:22, text:"Where does Tom want to meet Ameera?", choices:['In the park.','At work.','At the station.','At Pete\'s house.']},
+      {id:23, text:"Why hasn\'t Khalid finished his report?", choices:['His computer isn\'t working.','He\'s feeling sick.','He didn\'t sleep well.','He\'s got a cold.']},
+      {id:24, text:"What does Amal decide to buy as a present?", choices:['A hat.','Books.','Chocolates.','A belt.']},
+      {id:25, text:"Why is Pawel unsuitable for the new job?", choices:['he doesn\'t work hard','he doesn\'t like other people','he can\'t make decisions','he doesn\'t have experience']}
+    ];
+
+    // ====== RENDER QUESTIONS ======
+    const qWrap = document.getElementById('questions');
+    const answers = {};
+
+    function render() {
+      qWrap.innerHTML = '';
+      questions.forEach((q, index) => {
+        const card = document.createElement('div'); card.className = 'card';
+        const num = document.createElement('div'); num.className = 'qnum'; num.textContent = (index+1)+'. '+ q.text;
+        card.appendChild(num);
+        const choices = document.createElement('div'); choices.className = 'choices';
+        q.choices.forEach((c, i)=>{
+          const id = `q${index}_c${i}`;
+          const label = document.createElement('label');
+          label.innerHTML = `<input type='radio' name='q${index}' value='${i+1}' ${answers[index]==(i+1)?'checked':''}> ${String.fromCharCode(65+i)}. ${c}`;
+          choices.appendChild(label);
+        });
+        card.appendChild(choices);
+        qWrap.appendChild(card);
+      });
+
+      // attach change listeners
+      qWrap.querySelectorAll('input[type=radio]').forEach(r=>{
+        r.addEventListener('change', e=>{
+          const name = e.target.name; const qIndex = parseInt(name.slice(1));
+          answers[qIndex] = parseInt(e.target.value);
+        });
+      });
+    }
+
+    render();
+
+    // ====== CONTROLS ======
+    document.getElementById('clear').addEventListener('click', ()=>{
+      for(let i=0;i<questions.length;i++) delete answers[i];
+      document.querySelectorAll('input[type=radio]').forEach(i=>i.checked=false);
+      updateAnswerSheet();
+    });
+
+    function updateAnswerSheet(){
+      const pre = document.getElementById('answersPre');
+      let lines = [];
+      for(let i=0;i<questions.length;i++){
+        const ans = answers[i] ? answers[i] : '-';
+        lines.push((i+1)+'. '+ ans);
+      }
+      pre.textContent = lines.join('\n');
+    }
+
+    document.getElementById('showAnswers').addEventListener('click', ()=>{
+      const sheet = document.getElementById('answerSheet');
+      sheet.style.display = sheet.style.display === 'none' ? 'block' : 'none';
+      updateAnswerSheet();
+    });
+
+    document.getElementById('download').addEventListener('click', ()=>{
+      updateAnswerSheet();
+      const text = document.getElementById('answersPre').textContent;
+      const blob = new Blob([text], {type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'aptis-listening-answers.txt';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // Replay last clip: this simply restarts current audio
+    document.getElementById('replay').addEventListener('click', ()=>{
+      const p = document.getElementById('player'); p.currentTime = 0; p.play();
+    });
+    // Play full test: just plays audio from start
+    document.getElementById('playAll').addEventListener('click', ()=>{
+      const p = document.getElementById('player'); p.currentTime = 0; p.play();
+    });
+
+    // Keep answer sheet in sync when radio changed
+    qWrap.addEventListener('change', updateAnswerSheet);
+
+    // Accessibility: focus first radio when page loads
+    window.addEventListener('load', ()=>{
+      const first = document.querySelector('input[type=radio]'); if(first) first.focus();
+    });
+
+  </script>
+</body>
+</html>
